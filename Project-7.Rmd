@@ -100,6 +100,17 @@ abs(r_ex)>abs(qt(1-.05/2,47-5)) #This command computes whether each observation 
 - Using the externally studentized residuals (excluding the outlier observations), we can identify 3 observations (24, 36, and 39) as potential outliers. 
 
 1.F. Check for influential points. What do you conclude?
+```{r}
+cd<-cooks.distance(model)
+summary(cd) #already see here, none of the values is larger than 1 when we do have a small n
+sort(cd,dec=T)[1:10] #top 10 Cook's distances. dec=T means decreasing order, T indicates TRUE
+```
+-   Based on Cook's distances, we can see that none of the observations have a Cook's distance greater than 1, indicating that there are no highly influential points in the dataset. However, observations 39 and 24 have the highest Cook's distances, even assuming that 47 is a "large" sample size (therefore, Di > 4/(47) = .08), suggesting they may have some influence on the model.
+
+```{r,fig.width=4, fig.height=4}
+halfnorm(cd) #use half normal plot to identify influential observations because Cook's distances are always positive, rather than normal distribution
+```
+-   The halfnorm plot confirms that observations 39 and 24 are the most influential points in the dataset, as they lie furthest from the line.
 
 1.G. Check the structure of the relationship between the predictors and the
 response. 
