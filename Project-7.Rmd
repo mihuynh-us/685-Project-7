@@ -1,0 +1,16 @@
+---
+title: "Project 7"
+author: "Ellen Hickman, Mi Huynh"
+date: "2025-10-30"
+output: pdf_document
+---
+
+1\. Faraway Chapter 6. Exercise 2.
+
+• Use the teengamb dataset, fit a model with gamble as the response and the other variables as predictors.
+
+• Perform regression diagnostics on the model to answer the questions 1.A to 1.G. Display any plots that are relevant. Do not provide plots about which you have nothing to say. Suggest possible improvements or corrections to the model where appropriate.
+
+### 1.A. Check the zero error mean assumption using residual plots. What do you conclude?
+```{r}
+```
