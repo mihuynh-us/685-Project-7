@@ -58,6 +58,37 @@ shapiro.test(resid(model)) #null hypothesis is that the data is normally distrib
 -  The QQ plot shows deviation in the tails, suggesting the residuals may not be normally distributed. Additionally, the p-value of the SW test is significant (p > 0.001), having us reject the null that the data is normally distributed.
 
 1.D. Check for large leverage points. Which observations have a large leverage?
+```{r}
+hat<-hatvalues(model) #leverage is how much an observation influences its own predicted value, or how far an observation is from the mean of the predictor variables (x). High leverage points can have a significant impact on the regression line.
+hat
+sum(hat) #should equal number of parameters = 5
+mean(hat)
+hat>2*mean(hat) #look at all observations with high leverage (large hat values). formula for high leverage: hat > (2*p)/n (from lecture) where p = sum of hat. mean(hat) = sum(hat)/n = p/n
+```
+-   Observations 31, 33, 35, 42 have high leverage. This means that these observations have a large influence on their own predicted values. 
+
+```{r,fig.width=4, fig.height=4}
+halfnorm(hat) #halfnorm() from faraway package. halfnormal distribution is used to identify high leverage points because leverage values are always positive
+```
+-   Furthermore, the halfnorm plot confirms that observations 35, and 42 have high leverage, in addition to a couple others.
+
+Since we already have established that the residuals don't have constant variance and are not normally distributed, we want to standardize the residuals to correct for problematic points that would be overseen. 
+
+* Standardized residuals (i.e., internally studentized residuals)
+```{r}
+r_it<-rstandard(model) # residuals standardized by their estimated standard deviation (based on the leverage). rstandard is formula for internally studentized residuals
+sort(r_it)[1:10]
+sort(r_it,decreasing=T)[1:10]
+abs(sort(r_it)[1:10])>qt(1-.05/2,47-5) #calculate t-test. can see 5 cases that could be considered potentially influential based on studentized residuals. t=(1-alpha/2),(n-p). t = 1 - .05/2 is for two sided test. 47 is n, 5 is p
+```
+-  Now that we've standardized it, we can see that only 1 observation, #39 is considered with high leverage. 
+
+```{r,fig.width=4, fig.height=4}
+qqnorm(r_it) #to see if internally standardized residuals are normally distributed
+abline(0,1,col="red") #might be problematic
+shapiro.test(r_it) 
+```
+-   Checking the QQ plot and the SW test (p < 0.001), we see that the standardized residuals are not normally distributed. 
 
 1.E. Check for outliers. What do you conclude?
 
