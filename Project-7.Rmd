@@ -51,8 +51,11 @@ var.test(resid(model)[fitted(model)<=20], # var.test() tests if two variances ar
 -   var.test is testing the null hypothesis that the variances of the two groups are equal. The p-value is significant (0.03), so we reject the null hypothesis and conclude that there is a significant difference in variances between the two groups, at the arbitrary cut off of 20 for the fitted model values. 
 
 1.C. Check the error normality assumption. What do you conclude?
-```{r, fig.width=4, fig.height=4}
+```{r,fig.width=4, fig.height=4}
+qqnorm(resid(model)) #normal distribution of errors. QQ plot plots the distribution of the residuals against a theoretical normal distribution. If the points fall along a straight line, it suggests that the residuals are normally distributed.
+shapiro.test(resid(model)) #null hypothesis is that the data is normally distributed. Ha is that it doesn't follow the normal distribution. fail to reject null
 ```
+-  The QQ plot shows deviation in the tails, suggesting the residuals may not be normally distributed. Additionally, the p-value of the SW test is significant (p > 0.001), having us reject the null that the data is normally distributed.
 
 1.D. Check for large leverage points. Which observations have a large leverage?
 
