@@ -45,9 +45,9 @@ summary(lm(resid(model)~fitted(model)))
 var.test(resid(model)[fitted(model)<=20], # var.test() tests if two variances are equal. Ho = var1/var2 = 1. Ha = var1/var2 != 1
          resid(model)[fitted(model)>20]) #20 aribitrary cutoff to test equal variances across low and high fitted values
 ```
--   The goal of correlation & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). ####### need help interpreting corr and summary of model. Asking on piazza. ##########
--   Here, our correlation is a large negative number. 
--   Our model 
+-   The goal of correlation & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). ####### need help interpreting corr and summary of model. Asking on piazzaaaaa. ##########
+-   Here, our correlation is a large negative number. ####
+-   Our model ###
 -   var.test is testing the null hypothesis that the variances of the two groups are equal. The p-value is significant (0.03), so we reject the null hypothesis and conclude that there is a significant difference in variances between the two groups, at the arbitrary cut off of 20 for the fitted model values. 
 
 1.C. Check the error normality assumption. What do you conclude?
@@ -111,6 +111,34 @@ sort(cd,dec=T)[1:10] #top 10 Cook's distances. dec=T means decreasing order, T i
 halfnorm(cd) #use half normal plot to identify influential observations because Cook's distances are always positive, rather than normal distribution
 ```
 -   The halfnorm plot confirms that observations 39 and 24 are the most influential points in the dataset, as they lie furthest from the line.
+-   To see improvements of the model fit to the data, we suggest dropping the influential observations of 39 and 24, and refitting the model without them.
 
 1.G. Check the structure of the relationship between the predictors and the
 response. 
+
+Partial regression: Snapshot of how the residuals of the linear reg. function is controlling for the effect of other predictors.
+```{r}
+rd_1<-residuals(lm(gamble~sex+status+verbal,data=teengamb)) #gambling without the effect of sex, status, verbal
+rd_2<-residuals(lm(income~sex+status+verbal,data=teengamb)) #income without the effect of sex, status, verbal
+plot(rd_2,rd_1)
+abline(0,coef(model)['income'], col="red")  
+```
+-  We're looking at if we hold income stable, whether the linear relationship (red line) of the original model still holds even while we're looking at the residuals that control for the effects of sex, status, and verbal.
+
+Partial residual plot = (yj - effect of other predictors) against xj. 
+```{r,fig.width=4, fig.height=4}
+#termplot() is a function that plots regression terms against their predictors.
+termplot(model, partial.resid=T, terms=1) #partial (resid) for sex of the model as a function of sex. Females have slightly lower residuals than males. 
+termplot(model, partial.resid=T, terms=2) #partial residual plot for status. Same residuals across status. 
+termplot(model, partial.resid=T, terms=3) #partial residual plot for income. As income increases, the error of the model (residuals) also increases. May be more errors for higher income teens since they have more variations in how they choose to spend their money.
+termplot(model, partial.resid=T, terms=4) #partial residual plot for verbal. As verbal score increases, the error of the model (residuals) decreases slightly
+```
+
+```{r}
+summary(teengamb)
+mod1<-lm(model,subset(teengamb,income<=3.250)) # take the median, split data into two groups. Look at if the signficance is the same between the two arbitrary groups
+mod2<-lm(model,subset(teengamb,income>3.250))
+sumary(mod1); sumary(mod2)
+confint(mod1); confint(mod2) 
+```
+- We observe here that the effects and the confidence intervals for the two models are different, varying on low vs. high income teens, suggesting there is an interaction between income and other predictors on income.
