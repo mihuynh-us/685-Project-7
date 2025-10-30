@@ -3,6 +3,8 @@ title: "Project 7"
 author: "Ellen Hickman, Mi Huynh"
 date: "2025-10-30"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 1. Faraway Chapter 6. Exercise 2.
