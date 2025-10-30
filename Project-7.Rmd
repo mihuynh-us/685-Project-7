@@ -5,12 +5,28 @@ date: "2025-10-30"
 output: pdf_document
 ---
 
-1\. Faraway Chapter 6. Exercise 2.
+1. Faraway Chapter 6. Exercise 2.
 
 • Use the teengamb dataset, fit a model with gamble as the response and the other variables as predictors.
+```{r}
+library(faraway)
+data(teengamb)
+model <- lm(gamble ~ sex + status + income + verbal, data = teengamb)
+summary(model)
+# Check the mean, median, variance
+summary(resid(model))
+```
 
 • Perform regression diagnostics on the model to answer the questions 1.A to 1.G. Display any plots that are relevant. Do not provide plots about which you have nothing to say. Suggest possible improvements or corrections to the model where appropriate.
 
 ### 1.A. Check the zero error mean assumption using residual plots. What do you conclude?
 ```{r}
+hist(resid(model))
+plot(density(resid(model)), main = "Density Plot")
 ```
+### 1.B. Check the constant error variance assumption using residual plots as well as a formal testing. What do you conclude?
+```{r}
+# Do variance test here?
+```
+
+
