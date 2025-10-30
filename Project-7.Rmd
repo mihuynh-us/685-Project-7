@@ -91,6 +91,13 @@ shapiro.test(r_it)
 -   Checking the QQ plot and the SW test (p < 0.001), we see that the standardized residuals are not normally distributed. 
 
 1.E. Check for outliers. What do you conclude?
+```{r}
+r_ex<-rstudent(model)
+sort(r_ex)[1:10]
+sort(r_ex,dec=T)[1:10]
+abs(r_ex)>abs(qt(1-.05/2,47-5)) #This command computes whether each observation falls in statistical significance (t-test), given n and p, that each (iterations) observation changes the model estimates. Bonferroni correction for multiple testing. 120 observations, 2-tailed test. Use for externally studentized residuals, testing a lot of hypothesis at once, where each hypothesis has a high likelihood that they might be true. 
+```
+- Using the externally studentized residuals (excluding the outlier observations), we can identify 3 observations (24, 36, and 39) as potential outliers. 
 
 1.F. Check for influential points. What do you conclude?
 
