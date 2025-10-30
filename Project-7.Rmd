@@ -26,9 +26,39 @@ summary(resid(model))
 hist(resid(model))
 plot(density(resid(model)), main = "Density Plot")
 ```
-### 1.B. Check the constant error variance assumption using residual plots as well as a formal testing. What do you conclude?
+-     Using the histogram and density plot of the residuals, it appears that the 
+      residuals are approximately normally distributed around a mean of zero. 
+      Therefore, we can conclude that the zero error mean assumption is satisfied.
+-     Zero mean assumption means that the average of the residuals is zero. This is a key assumption in linear regression, ensuring that the model's predictions are unbiased on average.
+      
+### 1.B. Check the constant error variance assumption (homoskedascity) using residual plots as well as a formal testing. What do you conclude?
+```{r,fig.width=4, fig.height=4}
+plot(fitted(model),resid(model)) # estimated y vs residuals
+abline(h=0,col="blue")
+```
+-   The estimated y vs the residuals plot shows funneling, suggesting that the variance of the residuals is not constant, in other words heteroskedasticity is present. Heteroskedascity means that the variance of the the resdiuals is not the same for each predicted value. Homoskedasticity is constant variance. 
+-   Constant variance assumption means that the variance of the residuals is the same across all levels of the independent variables. This is important for the validity of hypothesis tests and confidence intervals (SE) in regression analysis.
+-   When constant variance assumption is violated, it can lead to inefficient (need more data to draw the same conclusions) estimates and unreliable (wide CIs) hypothesis tests.
 ```{r}
-# Do variance test here?
+cor(fitted(model), resid(model)) 
+summary(lm(resid(model)~fitted(model)))
+var.test(resid(model)[fitted(model)<=20], # var.test() tests if two variances are equal. Ho = var1/var2 = 1. Ha = var1/var2 != 1
+         resid(model)[fitted(model)>20]) #20 aribitrary cutoff to test equal variances across low and high fitted values
+```
+-   The goal of correlation & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). ####### need help interpreting corr and summary of model. Asking on piazza. ##########
+-   Here, our correlation is a large negative number. 
+-   Our model 
+-   var.test is testing the null hypothesis that the variances of the two groups are equal. The p-value is significant (0.03), so we reject the null hypothesis and conclude that there is a significant difference in variances between the two groups, at the arbitrary cut off of 20 for the fitted model values. 
+
+1.C. Check the error normality assumption. What do you conclude?
+```{r, fig.width=4, fig.height=4}
 ```
 
+1.D. Check for large leverage points. Which observations have a large leverage?
 
+1.E. Check for outliers. What do you conclude?
+
+1.F. Check for influential points. What do you conclude?
+
+1.G. Check the structure of the relationship between the predictors and the
+response. 
