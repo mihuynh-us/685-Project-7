@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 .gitattributes
+*.html linguist-detectable=false
