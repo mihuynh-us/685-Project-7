@@ -129,6 +129,8 @@ halfnorm(cd) #use half normal plot to identify influential observations because 
 ```
 
 -   The halfnorm plot confirms that observations 39 and 24 are the most influential points in the dataset, as they lie furthest from the line.
+-   To see improvements of the model fit to the data, we suggest dropping the influential observations of 39 and 24, and refitting the model without them.
+
 
 ### 1.G. Check the structure of the relationship between the predictors and the response.
 
