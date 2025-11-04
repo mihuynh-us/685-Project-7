@@ -7,9 +7,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-1. Faraway Chapter 6. Exercise 2.
+1.  Faraway Chapter 6. Exercise 2.
 
 • Use the teengamb dataset, fit a model with gamble as the response and the other variables as predictors.
+
 ```{r}
 library(faraway)
 data(teengamb)
@@ -22,42 +23,50 @@ summary(resid(model))
 • Perform regression diagnostics on the model to answer the questions 1.A to 1.G. Display any plots that are relevant. Do not provide plots about which you have nothing to say. Suggest possible improvements or corrections to the model where appropriate.
 
 ### 1.A. Check the zero error mean assumption using residual plots. What do you conclude?
+
 ```{r}
 hist(resid(model))
 plot(density(resid(model)), main = "Density Plot")
 ```
--     Using the histogram and density plot of the residuals, it appears that the 
-      residuals are approximately normally distributed around a mean of zero. 
-      Therefore, we can conclude that the zero error mean assumption is satisfied.
--     Zero mean assumption means that the average of the residuals is zero. This is a key assumption in linear regression, ensuring that the model's predictions are unbiased on average.
-      
+
+-   Using the histogram and density plot of the residuals, it appears that the residuals are approximately normally distributed around a mean of zero. Therefore, we can conclude that the zero error mean assumption is satisfied.
+
+-   Zero mean assumption means that the average of the residuals is zero. This is a key assumption in linear regression, ensuring that the model's predictions are unbiased on average.
+
 ### 1.B. Check the constant error variance assumption (homoskedascity) using residual plots as well as a formal testing. What do you conclude?
+
 ```{r,fig.width=4, fig.height=4}
 plot(fitted(model),resid(model)) # estimated y vs residuals
 abline(h=0,col="blue")
 ```
--   The estimated y vs the residuals plot shows funneling, suggesting that the variance of the residuals is not constant, in other words heteroskedasticity is present. Heteroskedascity means that the variance of the the resdiuals is not the same for each predicted value. Homoskedasticity is constant variance. 
+
+-   The estimated y vs the residuals plot shows funneling, suggesting that the variance of the residuals is not constant, in other words heteroskedasticity is present. Heteroskedascity means that the variance of the the resdiuals is not the same for each predicted value. Homoskedasticity is constant variance.
 -   Constant variance assumption means that the variance of the residuals is the same across all levels of the independent variables. This is important for the validity of hypothesis tests and confidence intervals (SE) in regression analysis.
 -   When constant variance assumption is violated, it can lead to inefficient (need more data to draw the same conclusions) estimates and unreliable (wide CIs) hypothesis tests.
+
 ```{r}
 cor(fitted(model), resid(model)) 
 summary(lm(resid(model)~fitted(model)))
 var.test(resid(model)[fitted(model)<=20], # var.test() tests if two variances are equal. Ho = var1/var2 = 1. Ha = var1/var2 != 1
          resid(model)[fitted(model)>20]) #20 aribitrary cutoff to test equal variances across low and high fitted values
 ```
--   The goal of correlation & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). ####### need help interpreting corr and summary of model. Asking on piazzaaaaa. ##########
--   Here, our correlation is a large negative number. ####
--   Our model ###
--   var.test is testing the null hypothesis that the variances of the two groups are equal. The p-value is significant (0.03), so we reject the null hypothesis and conclude that there is a significant difference in variances between the two groups, at the arbitrary cut off of 20 for the fitted model values. 
 
-1.C. Check the error normality assumption. What do you conclude?
+-   Here, our correlation is a large negative number. This suggests no relationship.
+-   The goal of correlation & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). Regressing residual of the model on fitted model, there is no relationship with a p-value of 1.
+-   var.test is testing the null hypothesis that the variances of the two groups are equal. The p-value is significant (0.03), so we reject the null hypothesis and conclude that the mean variances are not equal, at the arbitrary cut off of 20 for the fitted model values.
+-   So we conclude there there is no constant variance on #1 and #4. The no relationship observed in #2 and #3 is attributed the smaller sample size of 47.
+
+### 1.C. Check the error normality assumption. What do you conclude?
+
 ```{r,fig.width=4, fig.height=4}
 qqnorm(resid(model)) #normal distribution of errors. QQ plot plots the distribution of the residuals against a theoretical normal distribution. If the points fall along a straight line, it suggests that the residuals are normally distributed.
 shapiro.test(resid(model)) #null hypothesis is that the data is normally distributed. Ha is that it doesn't follow the normal distribution. fail to reject null
 ```
--  The QQ plot shows deviation in the tails, suggesting the residuals may not be normally distributed. Additionally, the p-value of the SW test is significant (p > 0.001), having us reject the null that the data is normally distributed.
 
-1.D. Check for large leverage points. Which observations have a large leverage?
+-   The QQ plot shows deviation in the tails, suggesting the residuals may not be normally distributed. Additionally, the p-value of the SW test is significant (p \> 0.001), having us reject the null that the data is normally distributed.
+
+### 1.D. Check for large leverage points. Which observations have a large leverage?
+
 ```{r}
 hat<-hatvalues(model) #leverage is how much an observation influences its own predicted value, or how far an observation is from the mean of the predictor variables (x). High leverage points can have a significant impact on the regression line.
 hat
@@ -65,67 +74,79 @@ sum(hat) #should equal number of parameters = 5
 mean(hat)
 hat>2*mean(hat) #look at all observations with high leverage (large hat values). formula for high leverage: hat > (2*p)/n (from lecture) where p = sum of hat. mean(hat) = sum(hat)/n = p/n
 ```
--   Observations 31, 33, 35, 42 have high leverage. This means that these observations have a large influence on their own predicted values. 
+
+-   Observations 31, 33, 35, 42 have high leverage. This means that these observations have a large influence on their own predicted values.
 
 ```{r,fig.width=4, fig.height=4}
 halfnorm(hat) #halfnorm() from faraway package. halfnormal distribution is used to identify high leverage points because leverage values are always positive
 ```
+
 -   Furthermore, the halfnorm plot confirms that observations 35, and 42 have high leverage, in addition to a couple others.
 
-Since we already have established that the residuals don't have constant variance and are not normally distributed, we want to standardize the residuals to correct for problematic points that would be overseen. 
+- Since we already have established that the residuals don't have constant variance and are not normally distributed, we want to standardize the residuals to correct for problematic points that would be overseen.
 
-* Standardized residuals (i.e., internally studentized residuals)
+-   Standardized residuals (i.e., internally studentized residuals)
+
 ```{r}
 r_it<-rstandard(model) # residuals standardized by their estimated standard deviation (based on the leverage). rstandard is formula for internally studentized residuals
 sort(r_it)[1:10]
 sort(r_it,decreasing=T)[1:10]
 abs(sort(r_it)[1:10])>qt(1-.05/2,47-5) #calculate t-test. can see 5 cases that could be considered potentially influential based on studentized residuals. t=(1-alpha/2),(n-p). t = 1 - .05/2 is for two sided test. 47 is n, 5 is p
 ```
--  Now that we've standardized it, we can see that only 1 observation, #39 is considered with high leverage. 
+
+-   Now that we've standardized it, we can see that only 1 observation, #39 is considered with high leverage.
 
 ```{r,fig.width=4, fig.height=4}
 qqnorm(r_it) #to see if internally standardized residuals are normally distributed
 abline(0,1,col="red") #might be problematic
 shapiro.test(r_it) 
 ```
--   Checking the QQ plot and the SW test (p < 0.001), we see that the standardized residuals are not normally distributed. 
 
-1.E. Check for outliers. What do you conclude?
+-   Checking the QQ plot and the SW test (p \< 0.001), we see that the standardized residuals are not normally distributed.
+
+### 1.E. Check for outliers. What do you conclude?
+
 ```{r}
 r_ex<-rstudent(model)
 sort(r_ex)[1:10]
 sort(r_ex,dec=T)[1:10]
 abs(r_ex)>abs(qt(1-.05/2,47-5)) #This command computes whether each observation falls in statistical significance (t-test), given n and p, that each (iterations) observation changes the model estimates. Bonferroni correction for multiple testing. 120 observations, 2-tailed test. Use for externally studentized residuals, testing a lot of hypothesis at once, where each hypothesis has a high likelihood that they might be true. 
 ```
-- Using the externally studentized residuals (excluding the outlier observations), we can identify 3 observations (24, 36, and 39) as potential outliers. 
 
-1.F. Check for influential points. What do you conclude?
+-   Using the externally studentized residuals (excluding the outlier observations), we can identify 3 observations (24, 36, and 39) as potential outliers.
+
+### 1.F. Check for influential points. What do you conclude?
+
 ```{r}
 cd<-cooks.distance(model)
 summary(cd) #already see here, none of the values is larger than 1 when we do have a small n
 sort(cd,dec=T)[1:10] #top 10 Cook's distances. dec=T means decreasing order, T indicates TRUE
 ```
--   Based on Cook's distances, we can see that none of the observations have a Cook's distance greater than 1, indicating that there are no highly influential points in the dataset. However, observations 39 and 24 have the highest Cook's distances, even assuming that 47 is a "large" sample size (therefore, Di > 4/(47) = .08), suggesting they may have some influence on the model.
+
+-   Based on Cook's distances, we can see that none of the observations have a Cook's distance greater than 1, indicating that there are no highly influential points in the dataset. However, observations 39 and 24 have the highest Cook's distances, even assuming that 47 is a "large" sample size (therefore, Di \> 4/(47) = .08), suggesting they may have some influence on the model.
 
 ```{r,fig.width=4, fig.height=4}
 halfnorm(cd) #use half normal plot to identify influential observations because Cook's distances are always positive, rather than normal distribution
 ```
+
 -   The halfnorm plot confirms that observations 39 and 24 are the most influential points in the dataset, as they lie furthest from the line.
 -   To see improvements of the model fit to the data, we suggest dropping the influential observations of 39 and 24, and refitting the model without them.
 
-1.G. Check the structure of the relationship between the predictors and the
-response. 
+### 1.G. Check the structure of the relationship between the predictors and the response.
 
 Partial regression: Snapshot of how the residuals of the linear reg. function is controlling for the effect of other predictors.
+
 ```{r}
 rd_1<-residuals(lm(gamble~sex+status+verbal,data=teengamb)) #gambling without the effect of sex, status, verbal
 rd_2<-residuals(lm(income~sex+status+verbal,data=teengamb)) #income without the effect of sex, status, verbal
 plot(rd_2,rd_1)
 abline(0,coef(model)['income'], col="red")  
 ```
--  We're looking at if we hold income stable, whether the linear relationship (red line) of the original model still holds even while we're looking at the residuals that control for the effects of sex, status, and verbal.
 
-Partial residual plot = (yj - effect of other predictors) against xj. 
+-   We're looking at if we hold income stable, whether the linear relationship (red line) of the original model still holds even while we're looking at the residuals that control for the effects of sex, status, and verbal.
+
+Partial residual plot = (yj - effect of other predictors) against xj.
+
 ```{r,fig.width=4, fig.height=4}
 #termplot() is a function that plots regression terms against their predictors.
 termplot(model, partial.resid=T, terms=1) #partial (resid) for sex of the model as a function of sex. Females have slightly lower residuals than males. 
@@ -141,4 +162,5 @@ mod2<-lm(model,subset(teengamb,income>3.250))
 sumary(mod1); sumary(mod2)
 confint(mod1); confint(mod2) 
 ```
-- We observe here that the effects and the confidence intervals for the two models are different, varying on low vs. high income teens, suggesting there is an interaction between income and other predictors on income.
+
+-   We observe here that the effects and the confidence intervals for the two models are different, varying on low vs. high income teens, suggesting there is an interaction between income and other predictors on income.
