@@ -41,8 +41,6 @@ abline(h=0,col="blue")
 ```
 
 -   The estimated y vs the residuals plot shows funneling, suggesting that the variance of the residuals is not constant, in other words heteroskedasticity is present. Heteroskedascity means that the variance of the the resdiuals is not the same for each predicted value. Homoskedasticity is constant variance.
--   Constant variance assumption means that the variance of the residuals is the same across all levels of the independent variables. This is important for the validity of hypothesis tests and confidence intervals (SE) in regression analysis.
--   When constant variance assumption is violated, it can lead to inefficient (need more data to draw the same conclusions) estimates and unreliable (wide CIs) hypothesis tests.
 
 ```{r}
 cor(fitted(model), resid(model)) 
@@ -51,9 +49,11 @@ var.test(resid(model)[fitted(model)<=20], # var.test() tests if two variances ar
          resid(model)[fitted(model)>20]) #20 aribitrary cutoff to test equal variances across low and high fitted values
 ```
 
--   Here, our correlation is a large negative number. The fitted values and predicted values are not correlated.
--   The goal of the linear regression between fitted & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). The residuals appear independent of fitted values.
--   var.test is testing the null hypothesis that the variances of the two groups are equal. The p-value is significant (0.03), so we reject the null hypothesis and conclude that the two variances are equal, at the arbitrary cut off of 20 for the fitted model values.
+-   However, our correlation between the fitted model and its residuals is a small number (4.775848e-17), which suggests fitted values and residuals are not correlated.
+-   The goal of the linear regression between fitted & predicted model is to show that there is no relation between the predicted y hat (x) and the residuals of the model (y). Again, the residuals appear independent of fitted values with a p-value of 1.
+-   However, since we know we visually observed a relationship in the plot, we test the variances at 20 to see if variances of the two groups are equal using 'var.test'. The ratio of the variances in 0.11 and the p-value is significant (0.03), so we reject the null hypothesis and conclude that the two variances are not equal, at the arbitrary cut off of 20 for the fitted model values.
+-   So we conclude there there is no constant variance on the basis of the visual plot and formal testing of the variances. The no relationship observed in the correlation and regressing the residuals on the fitted values can be attributed the smaller sample size of 47. 
+-   Constant variance assumption means that the variance of the residuals is the same across all levels of the independent variables. This is important for the validity of hypothesis tests and confidence intervals (SE) in regression analysis. When constant variance assumption is violated, it can lead to inefficient (need more data to draw the same conclusions) estimates and unreliable (wide CIs) hypothesis tests.
 
 ### 1.C. Check the error normality assumption. What do you conclude?
 
