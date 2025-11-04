@@ -130,12 +130,6 @@ halfnorm(cd) #use half normal plot to identify influential observations because 
 
 -   The halfnorm plot confirms that observations 39 and 24 are the most influential points in the dataset, as they lie furthest from the line.
 
-```{r}
-plot(model$fitted.values,model$residuals)
-abline(lm(y~x,perfect),col="red")
-abline(lm(y~x,perfect_add5),col="blue")
-```
-
 ### 1.G. Check the structure of the relationship between the predictors and the response.
 
 Partial regression: Snapshot of how the residuals of the linear reg. function is controlling for the effect of other predictors.
