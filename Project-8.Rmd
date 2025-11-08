@@ -1,5 +1,34 @@
 ---
-title: "Project-8"
-output: html_document
+title: "Project 8"
+author: "Ellen Hickman, Mi Huynh"
+date: "2025-11-08"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
+1. Faraway Chapter 7. Exercise 5.
+• For the prostate data, fit a model with lpsa as the response and the other variables
+as predictors.
+
+1.A. Compute and comment on the condition numbers.
+
+1.B. Compute and comment on the correlations between the predictors.
+
+1.C. Compute and comment on the variance inflation factors.
+
+2. Faraway Chapter 8. Exercise 4.
+• For the cars dataset, fit a linear model with distance as the response and speed as
+the predictor.
+
+2.A. Test the homoscedasticity assumption using both a scatter plot between the
+residuals and fitted values and an F-test of equal variance below and above the
+fitted value of 30.
+
+2.B. Report the estimate of the heteroscedastic consistent variance for the re-
+gression slope.
+
+2.C. Construct 95% confidence interval of the regression slope assuming ho-
+moscedasticity and using the results in 2.B. How do they compare?
+
+2.D. Check for the lack of fit of the model.
